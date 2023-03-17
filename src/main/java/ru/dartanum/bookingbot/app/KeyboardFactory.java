@@ -1,27 +1,28 @@
 package ru.dartanum.bookingbot.app;
 
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static ru.dartanum.bookingbot.app.constant.Action.*;
+import static ru.dartanum.bookingbot.app.constant.ActionConstants.*;
 
 public class KeyboardFactory {
-    public static ReplyKeyboard menuButtons() {
-        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+    public static ReplyKeyboard replyMenuKeyboard() {
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
 
-        rows.add(new ArrayList<>(){{
-            add(InlineKeyboardButton.builder().text("Мои билеты").callbackData(GET_TICKETS).build());
-            add(InlineKeyboardButton.builder().text("Пассажиры").callbackData(GET_PASSENGERS).build());
-        }});
-        rows.add(new ArrayList<>(){{
-            add(InlineKeyboardButton.builder().text("Бронирование").callbackData(START_BOOKING).build());
-        }});
-        keyboard.setKeyboard(rows);
+        KeyboardRow row1 = new KeyboardRow() {{
+            add(new KeyboardButton(ACT_GET_TICKETS));
+            add(new KeyboardButton(ACT_GET_PASSENGERS));
+        }};
+        KeyboardRow row2 = new KeyboardRow() {{
+            add(new KeyboardButton(ACT_START_BOOKING));
+            add(new KeyboardButton(ACT_GO_TO_MENU));
+        }};
+        keyboard.setKeyboard(new ArrayList<>() {{add(row1); add(row2);}});
+        keyboard.setOneTimeKeyboard(true);
 
         return keyboard;
     }

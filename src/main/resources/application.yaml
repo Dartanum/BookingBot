@@ -5,6 +5,5 @@ spring:
     password: password
 telegram:
   bot:
-    token: 
-    username:
-    creatorId:
+    token:
+    username: 
