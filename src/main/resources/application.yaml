@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db
+    username: user
+    password: password
+telegram:
+  bot:
+    token: 
+    username:
+    creatorId:

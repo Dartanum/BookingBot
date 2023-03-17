@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:15.2-bullseye
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+      PGDATA: "/var/lib/postgresql/data"
+    volumes:
+      - ../migrations/postgres:/docker-entrypoint-initdb.d
+    #      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - db-network
+
+  redis:
+    image: bitnami/redis:7.0.9
+    container_name: redis
+    restart: always
+    environment:
+      ALLOW_EMPTY_PASSWORD: yes
+    volumes:
+      - ./redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - db-network
+
+networks:
+  db-network:
+    driver: bridge
