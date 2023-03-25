@@ -6,22 +6,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 @Getter
 @Slf4j
-public class TelegramBot extends TelegramLongPollingBot {
+public class BookingBot extends TelegramLongPollingBot {
     private final TelegramBotProperties telegramBotProperties;
     private final UpdateHandler updateHandler;
 
-    protected TelegramBot(TelegramBotProperties telegramBotProperties, UpdateHandler updateHandler) {
+    protected BookingBot(TelegramBotProperties telegramBotProperties, UpdateHandler updateHandler) {
         super(telegramBotProperties.getToken());
         this.telegramBotProperties = telegramBotProperties;
         this.updateHandler = updateHandler;
@@ -30,21 +31,41 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(update.getMessage().getChatId());
+        sendMessage.setChatId(update.hasCallbackQuery()
+                ? update.getCallbackQuery().getMessage().getChatId()
+                : update.getMessage().getChatId());
         updateHandler.handle(update, sendMessage);
 
-        if (isNotBlank(sendMessage.getText())) {
-            try {
-                execute(sendMessage);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public String getBotUsername() {
         return telegramBotProperties.getUsername();
+    }
+
+    public void send(BotApiMethod<?> method) {
+        try {
+            execute(method);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeKeyboard(Long chatId) {
+        try {
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(chatId);
+            sendMessage.setReplyMarkup(ReplyKeyboardRemove.builder().removeKeyboard(true).build());
+            sendMessage.setText("Nya");
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     @PostConstruct

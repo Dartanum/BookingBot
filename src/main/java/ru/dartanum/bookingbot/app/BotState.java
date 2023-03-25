@@ -9,14 +9,35 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.dartanum.bookingbot.app.action.*;
+import ru.dartanum.bookingbot.app.action.booking.ChooseAirportAction;
+import ru.dartanum.bookingbot.app.action.booking.ChooseBookingDateRangeAction;
+import ru.dartanum.bookingbot.app.action.booking.StartBookingAction;
+import ru.dartanum.bookingbot.app.action.passenger.*;
+import ru.dartanum.bookingbot.app.action.ticket.GetTicketsAction;
 
 import java.util.EnumSet;
 
-import static ru.dartanum.bookingbot.app.constant.ActionConstants.*;
-import static ru.dartanum.bookingbot.app.constant.RegularExpressions.DATE_RANGE_REGEXP;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.dartanum.bookingbot.app.constant.CallbackActionConstants.*;
+import static ru.dartanum.bookingbot.app.constant.MessageActionConstants.*;
+import static ru.dartanum.bookingbot.app.constant.RegularExpressions.*;
 
 @Getter
 public enum BotState {
+    CALLBACK_QUERY {
+        @Override
+        Action selectAction(String text) {
+            var context = getApplicationContext();
+            if (text.startsWith(ACT_DELETE_PASSENGER)) {
+                return context.getBean(DeletePassengerAction.class);
+            }
+            if (text.startsWith(ACT_EDIT_PASSENGER)) {
+                return context.getBean(StartEditPassengerAction.class);
+            }
+            return null;
+        }
+    },
+
     DEFAULT {
         @Override
         Action selectAction(String text) {
@@ -40,12 +61,105 @@ public enum BotState {
         }
     },
 
+    //---------------------------PASSENGER---------------------------
+
     PASSENGER_LIST {
         @Override
         Action selectAction(String text) {
-            return getApplicationContext().getBean(GoToMenuAction.class);
+            var context = getApplicationContext();
+            return switch (text) {
+                case ACT_ADD_PASSENGER -> context.getBean(CreatePassengerAction.class);
+                case ACT_EDIT_PASSENGER -> context.getBean(StartEditPassengerAction.class);
+                case ACT_DELETE_PASSENGER -> context.getBean(DeletePassengerAction.class);
+                default -> null;
+            };
         }
     },
+
+    CREATING_PASSENGER_enterFullName {
+        @Override
+        Action selectAction(String text) {
+            if (isNotBlank(text)) {
+                var partNumber = text.split(" ").length;
+                if (partNumber == 2 || partNumber == 3) {
+                    return getApplicationContext().getBean(EnterFullNameAction.class);
+                }
+            }
+            return null;
+        }
+    },
+
+    CREATING_PASSENGER_enterSex {
+        @Override
+        Action selectAction(String text) {
+            if (isNotBlank(text) && (text.trim().equalsIgnoreCase("М") || text.trim().equalsIgnoreCase(("Ж")))) {
+                return getApplicationContext().getBean(EnterSexAction.class);
+            }
+            return null;
+        }
+    },
+
+    CREATING_PASSENGER_enterBirthDate {
+        @Override
+        Action selectAction(String text) {
+            if (isNotBlank(text) && text.trim().matches(DATE_REGEXP)) {
+                return getApplicationContext().getBean(EnterBirthDateAction.class);
+            }
+            return null;
+        }
+    },
+
+    CREATING_PASSENGER_enterPhoneNumber {
+        @Override
+        Action selectAction(String text) {
+            if (isNotBlank(text) && text.trim().matches(PHONE_REGEXP)) {
+                return getApplicationContext().getBean(EnterPhoneNumberAction.class);
+            }
+            return null;
+        }
+    },
+
+    CREATING_PASSENGER_enterEmail {
+        @Override
+        Action selectAction(String text) {
+            if (isNotBlank(text) && text.trim().matches(EMAIL_REGEXP)) {
+                return getApplicationContext().getBean(EnterEmailAction.class);
+            }
+            return null;
+        }
+    },
+
+    CREATING_PASSENGER_enterCitizenship {
+        @Override
+        Action selectAction(String text) {
+            if (isNotBlank(text) && text.trim().matches(WORD_LIST_REGEXP)) {
+                return getApplicationContext().getBean(EnterCitizenshipAction.class);
+            }
+            return null;
+        }
+    },
+
+    EDITING_PASSENGER_choose_field {
+        @Override
+        Action selectAction(String text) {
+            if (text.startsWith(ACT_EDIT_PASSENGER_CHOOSE_FIELD)) {
+                return getApplicationContext().getBean(EditPassengerChooseFieldAction.class);
+            }
+            return null;
+        }
+    },
+
+    EDITING_PASSENGER_enter_field {
+        @Override
+        Action selectAction(String text) {
+            if (text.length() > 0) {
+                return getApplicationContext().getBean(EditPassengerFieldAction.class);
+            }
+            return null;
+        }
+    },
+
+    //---------------------------TICKET---------------------------
 
     TICKET_LIST {
         @Override
@@ -54,21 +168,33 @@ public enum BotState {
         }
     },
 
-    START_BOOKING {
+    //---------------------------BOOKING---------------------------
+
+    BOOKING_start {
         @Override
         Action selectAction(String text) {
             var context = getApplicationContext();
             if (text.matches(DATE_RANGE_REGEXP)) {
                 return context.getBean(ChooseBookingDateRangeAction.class);
             }
-            return context.getBean(ReplyToWrongBookingDateRange.class);
+            return null;
         }
     },
 
-    BOOKING_DATE_CHOSEN {
+    BOOKING_dates_chosen {
         @Override
         Action selectAction(String text) {
-            return getApplicationContext().getBean(GoToMenuAction.class);
+            if (isNotBlank(text) && text.length() > 3) {
+                return getApplicationContext().getBean(ChooseAirportAction.class);
+            }
+            return null;
+        }
+    },
+
+    BOOKING_cities_chosen {
+        @Override
+        Action selectAction(String text) {
+            return null;
         }
     };
 
@@ -77,13 +203,19 @@ public enum BotState {
     public BotState nextState(SendMessage sendMessage, Message message) {
         MessageAction action = (MessageAction) selectAction(message.getText());
 
-        return action.execute(sendMessage, message);
+        return action != null
+                ? action.execute(sendMessage, message)
+                : getApplicationContext().getBean(IncorrectEnteredDataAction.class).execute(sendMessage, message);
     }
 
     public BotState nextState(SendMessage sendMessage, CallbackQuery callbackQuery) {
         CallbackQueryAction action = (CallbackQueryAction) selectAction(callbackQuery.getData());
+        Message msgFromCallback  = new Message();
+        msgFromCallback.setFrom(callbackQuery.getFrom());
 
-        return action.execute(sendMessage, callbackQuery);
+        return action != null
+                ? action.execute(sendMessage, callbackQuery)
+                : CALLBACK_QUERY;
     }
 
     abstract Action selectAction(String text);

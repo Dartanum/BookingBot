@@ -1,17 +1,16 @@
-package ru.dartanum.bookingbot.app.action;
+package ru.dartanum.bookingbot.app.action.ticket;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.dartanum.bookingbot.app.BotState;
-
-import static ru.dartanum.bookingbot.app.constant.BotReplyConstants.MSG_INVALID_BOOKING_DATE_FORMAT;
+import ru.dartanum.bookingbot.app.action.MessageAction;
 
 @Component
-public class ReplyToWrongBookingDateRange implements MessageAction {
+public class GetTicketsAction implements MessageAction {
     @Override
     public BotState execute(SendMessage sendMessage, Message message) {
-        sendMessage.setText(MSG_INVALID_BOOKING_DATE_FORMAT);
-        return BotState.START_BOOKING;
+        sendMessage.setText("ticket list");
+        return BotState.TICKET_LIST;
     }
 }
