@@ -44,7 +44,7 @@ public class EnterCitizenshipAction implements MessageAction {
             storage.getPassengers().add(passenger);
             storage.setNewPassenger(new TelegramPassenger());
             sendMessage.enableMarkdownV2(true);
-            sendMessage.setText(format(MSG_TEMPLATE_PASSENGER_ADDED, MessageFactory.passengerCard(passenger)));
+            sendMessage.setText(format(MSG_TEMPLATE_PASSENGER_ADDED, MessageFactory.mdPassengerCard(passenger)));
             userStorageRepository.save(storage);
 
             return BotState.PASSENGER_LIST;

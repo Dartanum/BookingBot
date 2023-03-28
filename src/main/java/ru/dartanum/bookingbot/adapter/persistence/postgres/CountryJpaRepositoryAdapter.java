@@ -16,4 +16,9 @@ public class CountryJpaRepositoryAdapter implements CountryRepository {
     public List<Country> findAll() {
         return countryJpaRepository.findAll();
     }
+
+    @Override
+    public List<Country> searchByName(String name) {
+        return countryJpaRepository.searchByName(name);
+    }
 }

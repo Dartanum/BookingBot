@@ -1,25 +1,25 @@
 CREATE TABLE seat_class (
-  code varchar(30) PRIMARY KEY,
-  name varchar(50) NOT NULL UNIQUE
+  code varchar PRIMARY KEY,
+  name varchar NOT NULL UNIQUE
 );
 
 CREATE TABLE airplane_type (
-  code varchar(30) PRIMARY KEY,
-  name varchar(50) NOT NULL UNIQUE
+  code varchar PRIMARY KEY,
+  name varchar NOT NULL UNIQUE
 );
 
 CREATE TABLE seat (
     id UUID PRIMARY KEY,
-    class_code varchar(30) NOT NULL,
-    airplane_model_code varchar(30) NOT NULL,
-    code varchar(30) NOT NULL,
+    class_code varchar NOT NULL,
+    airplane_model_code varchar NOT NULL,
+    code varchar NOT NULL,
     FOREIGN KEY (class_code) REFERENCES seat_class(code)
 );
 
 CREATE TABLE airplane_model (
-    code varchar(30) PRIMARY KEY,
+    code varchar PRIMARY KEY,
     seat_number INTEGER,
-    type_code varchar(30),
+    type_code varchar,
     maximum_flight_range INTEGER,
     length REAL,
     path_length INTEGER,
@@ -34,8 +34,8 @@ REFERENCES airplane_model(code);
 
 CREATE TABLE airplane (
     id UUID PRIMARY KEY,
-    code varchar(30) NOT NULL,
-    model_code varchar(30) NOT NULL,
+    code varchar NOT NULL,
+    model_code varchar NOT NULL,
     airline_id UUID,
     manufacture_date DATE,
     number_of_flights INTEGER,
@@ -45,7 +45,7 @@ CREATE TABLE airplane (
 
 CREATE TABLE route (
     id UUID PRIMARY KEY,
-    code varchar(30) NOT NULL,
+    code varchar NOT NULL,
     source_airport_id UUID NOT NULL,
     target_airport_id UUID NOT NULL,
     flight_duration INTEGER
@@ -53,7 +53,7 @@ CREATE TABLE route (
 
 CREATE TABLE flight (
     id UUID PRIMARY KEY,
-    code varchar(30) NOT NULL,
+    code varchar NOT NULL,
     route_id UUID NOT NULL,
     airplane_id UUID NOT NULL
 );
@@ -71,7 +71,7 @@ REFERENCES airplane(id);
 CREATE TABLE tariff (
     id uuid PRIMARY KEY,
     airline_id uuid NOT NULL,
-    name varchar(30) NOT NULL,
+    name varchar NOT NULL,
     include_hand_baggage boolean DEFAULT TRUE,
     hand_baggage_weight real,
     include_baggage boolean NOT NULL,
@@ -86,6 +86,7 @@ CREATE TABLE ticket (
     flight_id uuid NOT NULL,
     order_dateTime timestamp NOT NULL,
     price real NOT NULL,
+    currencySymbol varchar,
     seat_id uuid,
     tariff_id uuid NOT NULL,
     FOREIGN KEY (flight_id) REFERENCES flight(id),
@@ -95,14 +96,14 @@ CREATE TABLE ticket (
 
 CREATE TABLE passenger (
     id uuid PRIMARY KEY,
-    name varchar(50) NOT NULL,
-    surname varchar(50) NOT NULL,
-    father_name varchar(50),
-    phone_number varchar(16),
-    email varchar(50),
+    name varchar NOT NULL,
+    surname varchar NOT NULL,
+    father_name varchar,
+    phone_number varchar,
+    email varchar,
     birth_date date NOT NULL,
     registration_date date,
-    sex varchar(6) NOT NULL
+    sex varchar NOT NULL
 );
 
 ALTER TABLE ticket
@@ -111,15 +112,15 @@ FOREIGN KEY (passenger_id)
 REFERENCES passenger(id);
 
 CREATE TABLE document_type (
-    code varchar(100) PRIMARY KEY,
-    name varchar(100) NOT NULL UNIQUE
+    code varchar PRIMARY KEY,
+    name varchar NOT NULL UNIQUE
 );
 
 CREATE TABLE identity_document (
     id uuid PRIMARY KEY,
     passenger_id uuid NOT NULL,
-    document_type_code varchar(100) NOT NULL,
-    number varchar(30) NOT NULL,
+    document_type_code varchar NOT NULL,
+    number varchar NOT NULL,
     expiration_date date,
     issue_date date,
     FOREIGN KEY (passenger_id) REFERENCES passenger(id),
@@ -139,10 +140,10 @@ CREATE TABLE timetable (
 
 CREATE TABLE airline (
     id uuid PRIMARY KEY,
-    name varchar(30) NOT NULL UNIQUE,
-    site varchar(50),
+    name varchar NOT NULL UNIQUE,
+    site varchar,
     logo bytea,
-    country_code varchar(30) NOT NULL
+    country_code varchar NOT NULL
 );
 
 ALTER TABLE airplane
@@ -151,14 +152,14 @@ FOREIGN KEY (airline_id)
 REFERENCES airline(id);
 
 CREATE TABLE country (
-    code varchar(30) PRIMARY KEY,
-    name varchar(30) NOT NULL UNIQUE
+    code varchar PRIMARY KEY,
+    name varchar NOT NULL UNIQUE
 );
 
 CREATE TABLE city (
-    code varchar(50) PRIMARY KEY,
-    name varchar(30) NOT NULL UNIQUE,
-    country_code varchar(50) NOT NULL,
+    code varchar PRIMARY KEY,
+    name varchar NOT NULL UNIQUE,
+    country_code varchar NOT NULL,
     FOREIGN KEY (country_code) REFERENCES country(code)
 );
 
@@ -169,12 +170,12 @@ REFERENCES country(code);
 
 CREATE TABLE airport(
     id uuid PRIMARY KEY,
-    city_code varchar(50) NOT NULL,
-    name varchar(30) NOT NULL,
-    code varchar(30) NOT NULL,
+    city_code varchar NOT NULL,
+    name varchar NOT NULL,
+    code varchar NOT NULL,
     is_international boolean,
-    address varchar(50),
-    phone_number varchar(16),
+    address varchar,
+    phone_number varchar,
     FOREIGN KEY (city_code) REFERENCES city(code)
 );
 

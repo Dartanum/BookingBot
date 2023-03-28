@@ -3,6 +3,7 @@ package ru.dartanum.bookingbot.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -15,12 +16,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Accessors(chain = true)
 public class Ticket {
     @Id
     @GeneratedValue
     private UUID id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "passenger_id")
     @NotNull
     private Passenger passenger;
@@ -35,7 +37,7 @@ public class Ticket {
     @NotNull
     private Tariff tariff;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "seat_id")
     private Seat seat;
 
@@ -43,6 +45,7 @@ public class Ticket {
     private LocalDateTime orderDatetime;
     @NotNull
     private Float price;
+    private String currencySymbol;
 
     @Override
     public boolean equals(Object obj) {

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CountryRepository {
     List<Country> findAll();
+
+    List<Country> searchByName(String name);
 }

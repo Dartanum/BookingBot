@@ -12,8 +12,10 @@ import ru.dartanum.bookingbot.app.api.repository.UserStorageRepository;
 
 import java.time.LocalDate;
 
-import static ru.dartanum.bookingbot.app.constant.BotReplyConstants.MSG_CHOSE_AIRPORTS;
+import static ru.dartanum.bookingbot.app.constant.BotReplyConstants.MSG_CHOSE_SOURCE_AIRPORTS;
+import static ru.dartanum.bookingbot.app.constant.BotReplyConstants.MSG_INVALID_DATE_RANGE;
 import static ru.dartanum.bookingbot.app.constant.Constants.DATE_TIME_FORMATTER;
+import static ru.dartanum.bookingbot.app.constant.Constants.FLIGHT_DATE_TIME_FORMATTER;
 
 @Component
 @RequiredArgsConstructor
@@ -33,9 +35,15 @@ public class ChooseBookingDateRangeAction implements MessageAction {
             to = LocalDate.parse(parts[1].trim(), DATE_TIME_FORMATTER);
         }
 
+        if (to != null && (from.isAfter(to) || LocalDate.now().isAfter(from))) {
+            sendMessage.setText(MSG_INVALID_DATE_RANGE);
+
+            return BotState.BOOKING_start;
+        }
+
         storage.setBookingDateRange(Pair.of(from, to));
         userStorageRepository.save(storage);
-        sendMessage.setText(MSG_CHOSE_AIRPORTS);
+        sendMessage.setText(MSG_CHOSE_SOURCE_AIRPORTS);
 
         return BotState.BOOKING_dates_chosen;
     }

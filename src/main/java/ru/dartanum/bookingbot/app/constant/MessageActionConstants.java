@@ -7,4 +7,5 @@ public interface MessageActionConstants {
     String ACT_START_BOOKING = "Бронирование";
     String ACT_GO_TO_MENU = "Меню";
     String ACT_ADD_PASSENGER = "Добавить пассажира";
+    String ACT_BOOK_TICKET = "Забронировать";
 }

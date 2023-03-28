@@ -15,5 +15,6 @@ public class TelegramTicket {
     private UUID flightId;
     private UUID tariffId;
     private UUID seatId;
-    private Float price;
+    private Long price;
+    private String currencySymbol;
 }

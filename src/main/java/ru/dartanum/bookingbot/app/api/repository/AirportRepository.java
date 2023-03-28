@@ -5,5 +5,5 @@ import ru.dartanum.bookingbot.domain.Airport;
 import java.util.List;
 
 public interface AirportRepository {
-    List<Airport> search(String text);
+    List<Airport> searchByName(String next);
 }

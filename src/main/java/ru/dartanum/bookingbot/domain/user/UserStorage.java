@@ -6,7 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import ru.dartanum.bookingbot.app.BotState;
-import ru.dartanum.bookingbot.domain.Airport;
+import ru.dartanum.bookingbot.domain.Place;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -20,10 +20,11 @@ public class UserStorage {
     @Id
     private Long userId;
     private String botState;
-    private Pair<Airport, Airport> bookingAirportFromTo;
+    private Pair<Place, Place> bookingFromTo;
     private Pair<LocalDate, LocalDate> bookingDateRange;
     private Set<TelegramPassenger> passengers;
-    private TelegramTicket ticket;
+    private Set<UUID> ticketIds;
+    private TelegramTicket newTicket;
     private Pair<UUID, String> editingPassengerField;
     private TelegramPassenger newPassenger;
 
@@ -32,11 +33,16 @@ public class UserStorage {
         botState = BotState.DEFAULT.name();
         passengers = new HashSet<>();
         newPassenger = new TelegramPassenger();
+        newTicket = new TelegramTicket();
+        ticketIds = new HashSet<>();
     }
 
     public void reset() {
+        newTicket = new TelegramTicket();
         editingPassengerField = null;
         newPassenger = new TelegramPassenger();
+        bookingFromTo = null;
+        bookingDateRange = null;
     }
 
     public BotState getBotState() {

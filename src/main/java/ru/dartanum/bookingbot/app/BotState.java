@@ -9,9 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.dartanum.bookingbot.app.action.*;
-import ru.dartanum.bookingbot.app.action.booking.ChooseAirportAction;
-import ru.dartanum.bookingbot.app.action.booking.ChooseBookingDateRangeAction;
-import ru.dartanum.bookingbot.app.action.booking.StartBookingAction;
+import ru.dartanum.bookingbot.app.action.booking.*;
 import ru.dartanum.bookingbot.app.action.passenger.*;
 import ru.dartanum.bookingbot.app.action.ticket.GetTicketsAction;
 
@@ -159,15 +157,6 @@ public enum BotState {
         }
     },
 
-    //---------------------------TICKET---------------------------
-
-    TICKET_LIST {
-        @Override
-        Action selectAction(String text) {
-            return getApplicationContext().getBean(GoToMenuAction.class);
-        }
-    },
-
     //---------------------------BOOKING---------------------------
 
     BOOKING_start {
@@ -184,16 +173,82 @@ public enum BotState {
     BOOKING_dates_chosen {
         @Override
         Action selectAction(String text) {
+            var context = getApplicationContext();
+            if (text.startsWith(ACT_BOOKING_CHOOSE_VARIANT)) {
+                return context.getBean(ChooseSourceAction.class);
+            }
             if (isNotBlank(text) && text.length() > 3) {
-                return getApplicationContext().getBean(ChooseAirportAction.class);
+                return context.getBean(EnterSourceAction.class);
             }
             return null;
         }
     },
 
-    BOOKING_cities_chosen {
+    BOOKING_source_place_chosen {
         @Override
         Action selectAction(String text) {
+            var context = getApplicationContext();
+            if (text.startsWith(ACT_BOOKING_CHOOSE_VARIANT)) {
+                return context.getBean(ChooseDestinationAction.class);
+            }
+            if (isNotBlank(text) && text.length() > 3) {
+                return context.getBean(EnterDestinationAction.class);
+            }
+            return null;
+        }
+    },
+
+    BOOKING_destination_place_chosen {
+        @Override
+        Action selectAction(String text) {
+            var context = getApplicationContext();
+            if (text.startsWith(ACT_START_TICKET_BOOKING)) {
+                return context.getBean(StartBookTicketAction.class);
+            }
+            return null;
+        }
+    },
+
+    BOOKING_flight_chosen {
+        @Override
+        Action selectAction(String text) {
+            var context = getApplicationContext();
+            if (text.startsWith(ACT_BOOKING_CHOOSE_VARIANT)) {
+                return context.getBean(ChoosePassengerAction.class);
+            }
+            return null;
+        }
+    },
+
+    BOOKING_passenger_chosen {
+        @Override
+        Action selectAction(String text) {
+            var context = getApplicationContext();
+            if (text.startsWith(ACT_BOOKING_CHOOSE_VARIANT)) {
+                return context.getBean(ChooseTariffAction.class);
+            }
+            return null;
+        }
+    },
+
+    BOOKING_tariff_chosen {
+        @Override
+        Action selectAction(String text) {
+            var context = getApplicationContext();
+            if (text.startsWith(ACT_BOOKING_CHOOSE_VARIANT)) {
+                return context.getBean(ChooseSeatClassAction.class);
+            }
+            return null;
+        }
+    },
+
+    BOOKING_ticket_created {
+        @Override
+        Action selectAction(String text) {
+            var context = getApplicationContext();
+            if (text.startsWith(ACT_BOOK_TICKET)) {
+                return context.getBean(BookTicketAction.class);
+            }
             return null;
         }
     };

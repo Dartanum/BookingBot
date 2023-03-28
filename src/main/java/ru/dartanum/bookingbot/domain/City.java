@@ -6,17 +6,36 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
-public class City {
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+public class City extends Place {
     @Id
     private String code;
-    @NotNull
-    private String name;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "country_id")
+    @JoinColumn(name = "country_code")
     @NotNull
     private Country country;
+
+    public City() {
+        super(City.class);
+    }
+
+    public City(String code, String name, Country country) {
+        super(City.class);
+        this.code = code;
+        this.name = name;
+        this.country = country;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

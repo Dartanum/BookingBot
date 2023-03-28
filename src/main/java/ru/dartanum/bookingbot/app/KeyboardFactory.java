@@ -1,11 +1,12 @@
 package ru.dartanum.bookingbot.app;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import ru.dartanum.bookingbot.domain.Seat;
+import ru.dartanum.bookingbot.domain.SeatClass;
 
 import java.util.*;
 
@@ -73,6 +74,90 @@ public class KeyboardFactory {
 
         return InlineKeyboardMarkup.builder()
                 .keyboard(rows)
+                .build();
+    }
+
+    public static InlineKeyboardMarkup inlineListOfVariants(int number) {
+        final int btnPerRow = 5;
+        final int rowsNumber = (number + btnPerRow - 1) / btnPerRow;
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>(rowsNumber);
+
+        for (int i = 1; i <= number;) {
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            final int btnPerCurrentRow = number - rows.size() * btnPerRow;
+
+            for (int j = 0; j < Math.min(btnPerRow, btnPerCurrentRow); j++) {
+                row.add(constructInlineButton(String.valueOf(i), ACT_BOOKING_CHOOSE_VARIANT, i));
+                i++;
+            }
+            rows.add(row);
+        }
+
+        return InlineKeyboardMarkup.builder()
+                .keyboard(rows)
+                .build();
+    }
+
+    public static InlineKeyboardMarkup inlineListOfVariantsWithId(List<UUID> ids) {
+        final int number = ids.size();
+        final int btnPerRow = 5;
+        final int rowsNumber = (number + btnPerRow - 1) / btnPerRow;
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>(rowsNumber);
+
+        for (int i = 1; i <= number;) {
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            final int btnPerCurrentRow = number - rows.size() * btnPerRow;
+
+            for (int j = 0; j < Math.min(btnPerRow, btnPerCurrentRow); j++) {
+                row.add(constructInlineButton(String.valueOf(i), ACT_BOOKING_CHOOSE_VARIANT, ids.get(i - 1)));
+                i++;
+            }
+            rows.add(row);
+        }
+
+        return InlineKeyboardMarkup.builder()
+                .keyboard(rows)
+                .build();
+    }
+
+    public static InlineKeyboardMarkup inlineFlightOptions(UUID flightId) {
+        var bookBtn = constructInlineButton("Забронировать", ACT_START_TICKET_BOOKING, flightId);
+
+        return InlineKeyboardMarkup.builder()
+                .keyboard(List.of(List.of(bookBtn)))
+                .build();
+    }
+
+    public static InlineKeyboardMarkup inlineSeatClassList(List<SeatClass> seatClasses) {
+        final int number = seatClasses.size();
+        final int btnPerRow = 5;
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+
+        for (int i = 1; i <= number;) {
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            final int btnPerCurrentRow = number - keyboard.size() * btnPerRow;
+
+            for (int j = 0; j < Math.min(btnPerRow, btnPerCurrentRow); j++) {
+                row.add(constructInlineButton(String.valueOf(seatClasses.get(i-1).getName()), ACT_BOOKING_CHOOSE_VARIANT, seatClasses.get(i-1).getCode()));
+                i++;
+            }
+            keyboard.add(row);
+        }
+
+        return InlineKeyboardMarkup.builder()
+                .keyboard(keyboard)
+                .build();
+    }
+
+    public static ReplyKeyboardMarkup replyBookingDecisions() {
+        KeyboardRow row = new KeyboardRow() {{
+            add(new KeyboardButton(ACT_BOOK_TICKET));
+            add(new KeyboardButton(ACT_GO_TO_MENU));
+        }};
+
+        return ReplyKeyboardMarkup.builder()
+                .oneTimeKeyboard(true)
+                .keyboard(List.of(row))
                 .build();
     }
 

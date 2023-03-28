@@ -6,18 +6,20 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.UUID;
 
 @Entity
 @Data
+@Accessors(chain = true)
 public class Tariff {
     @Id
     private UUID id;
     @NotNull
     private String name;
     private boolean includeHandBaggage;
-    private Float hangBaggageWeight;
+    private Float handBaggageWeight;
     private boolean includeBaggage;
     private Float baggageWeight;
     private boolean includeTicketExchange;

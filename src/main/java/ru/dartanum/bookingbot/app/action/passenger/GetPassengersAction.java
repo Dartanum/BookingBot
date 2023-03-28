@@ -45,7 +45,7 @@ public class GetPassengersAction implements MessageAction {
         passengers.forEach(passenger -> {
             SendMessage msg = new SendMessage();
             msg.setChatId(chatId);
-            msg.setText(MessageFactory.passengerCard(passenger));
+            msg.setText(MessageFactory.mdPassengerCard(passenger));
             msg.enableMarkdownV2(true);
             msg.setReplyMarkup(KeyboardFactory.inlinePassengerOps(passenger.getId()));
 

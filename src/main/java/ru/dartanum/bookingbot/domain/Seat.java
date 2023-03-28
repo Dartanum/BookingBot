@@ -3,11 +3,13 @@ package ru.dartanum.bookingbot.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.UUID;
 
 @Entity
 @Data
+@Accessors(chain = true)
 public class Seat {
     @Id
     private UUID id;
@@ -23,4 +25,7 @@ public class Seat {
     @JoinColumn(name = "airplane_model_code")
     @NotNull
     private AirplaneModel airplaneModel;
+
+    @OneToOne(mappedBy = "seat")
+    private Ticket ticket;
 }

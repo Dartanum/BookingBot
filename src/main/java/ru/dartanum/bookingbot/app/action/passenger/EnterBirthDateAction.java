@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import static ru.dartanum.bookingbot.app.constant.BotReplyConstants.MSG_DATE_AFTER_NOW;
 import static ru.dartanum.bookingbot.app.constant.BotReplyConstants.MSG_ENTER_PHONE_NUMBER;
 import static ru.dartanum.bookingbot.app.constant.Constants.DATE_TIME_FORMATTER;
+import static ru.dartanum.bookingbot.app.constant.Constants.FLIGHT_DATE_TIME_FORMATTER;
 
 @Component
 @RequiredArgsConstructor

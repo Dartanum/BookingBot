@@ -4,15 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
@@ -20,6 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Accessors(chain = true)
 public class Passenger {
     @Id
     @GeneratedValue
@@ -39,12 +39,12 @@ public class Passenger {
     @NotNull
     private LocalDate registrationDate;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Fetch(FetchMode.SUBSELECT)
     @JoinTable(name = "citizenship",
             joinColumns = @JoinColumn(name = "passenger_id"),
             inverseJoinColumns = @JoinColumn(name = "country_code"))
-    private List<Country> citizenship = new ArrayList<>();
+    private Set<Country> citizenship = new HashSet<>();
 
     @OneToMany(mappedBy = "passenger", fetch = FetchType.EAGER, orphanRemoval = true, cascade = {CascadeType.ALL})
     private List<IdentityDocument> documents = new ArrayList<>();

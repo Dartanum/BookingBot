@@ -18,10 +18,16 @@ public interface BotReplyConstants {
     String MSG_EDIT_PASSENGER_CHOOSE_FIELD = "Выберите что хотите изменить";
     String MSG_EDIT_PASSENGER_ENTER = "Введите новое значение";
     String MSG_SUCCESS_EDITED_PASSENGER = "Изменения успешно сохранены!";
+    String MSG_ERROR_DURING_EDITING_PASSENGER = "Не удалось внести изменения :( Попробуй еще раз";
     //---------------------------TICKET---------------------------
 
     //---------------------------BOOKING---------------------------
     String MSG_ASK_DATE_RANGE = "Введите дату начала и конца (опционально) поездки в формате дд.мм.гггг - дд.мм.гггг";
-    String MSG_CHOSE_AIRPORTS = "Выберите аэропорт отправления. Введите название аэропорта, города или страны";
+    String MSG_INVALID_DATE_RANGE = "Некорректные даты поездки";
+    String MSG_CHOSE_SOURCE_AIRPORTS = "Выберите место отправления. Введите название аэропорта, города или страны";
     String MSG_CANNOT_FIND_AIRPORTS = "Я не смог найти совпадения :( Попробуй еще раз";
+    String MSG_CHOOSE_DESTINATION_AIRPORT = "Выберите место назначения. Введите название аэропорта, города или страны";
+    String MSG_START_SEARCHING_TICKETS = "Ищу билеты специально для вас!";
+    String MSG_EMPTY_SEARCH_RESULT = "Не удалось найти ни одного билета по твоим параметрам :(";
+    String MSG_TICKET_BOOKED = "Билет успешно забронирован!";
 }

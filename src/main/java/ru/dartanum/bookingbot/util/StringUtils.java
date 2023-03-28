@@ -6,7 +6,7 @@ import java.util.Objects;
 import static java.lang.String.format;
 
 public class StringUtils {
-    private static final String[] ESCAPED_CHARACTERS = {"+", ".", "*", "_", "!"};
+    private static final String[] ESCAPED_CHARACTERS = {"+", ".", "_", "!"};
 
     private StringUtils() {}
 

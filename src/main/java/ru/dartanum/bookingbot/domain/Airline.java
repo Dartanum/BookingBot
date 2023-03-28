@@ -1,14 +1,12 @@
 package ru.dartanum.bookingbot.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -28,4 +26,12 @@ public class Airline {
     @JoinColumn(name = "country_code")
     @NotNull
     private Country country;
+
+    @OneToMany(mappedBy = "airline", fetch = FetchType.EAGER)
+    private List<Tariff> tariffs;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

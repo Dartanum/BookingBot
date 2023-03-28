@@ -22,7 +22,7 @@ public class AirplaneModel {
     @NotNull
     private AirplaneType type;
 
-    @OneToMany(mappedBy = "airplaneModel")
+    @OneToMany(mappedBy = "airplaneModel", fetch = FetchType.EAGER)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Seat> seats;
