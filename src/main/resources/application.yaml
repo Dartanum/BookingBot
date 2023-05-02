@@ -12,5 +12,5 @@ spring:
       uri: mongodb://user:password@localhost:27017/db?authSource=admin
 telegram:
   bot:
-    token: '6141569812:AAF5VsG74Tt-DeOAphfWMjaDsYCars8L6Ow'
-    username: '@aviabooking_bot'
+    token: 
+    username: 
