@@ -164,7 +164,7 @@ public enum BotState {
         Action selectAction(String text) {
             var context = getApplicationContext();
             if (text.matches(DATE_RANGE_REGEXP)) {
-                return context.getBean(ChooseBookingDateRangeAction.class);
+                return context.getBean(ChooseBookingDateAction.class);
             }
             return null;
         }

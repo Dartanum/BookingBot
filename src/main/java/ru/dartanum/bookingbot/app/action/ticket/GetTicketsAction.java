@@ -11,6 +11,8 @@ import ru.dartanum.bookingbot.app.action.MessageAction;
 import ru.dartanum.bookingbot.app.api.repository.TicketRepository;
 import ru.dartanum.bookingbot.app.api.repository.UserStorageRepository;
 
+import static ru.dartanum.bookingbot.app.constant.BotReplyConstants.MSG_NO_TICKETS;
+
 @Component
 @RequiredArgsConstructor
 public class GetTicketsAction implements MessageAction {
@@ -22,6 +24,13 @@ public class GetTicketsAction implements MessageAction {
     public BotState execute(SendMessage sendMessage, Message message) {
         var storage = userStorageRepository.getById(message.getFrom().getId());
         var tickets = ticketRepository.findAllByIds(storage.getTicketIds());
+
+        if (tickets.isEmpty()) {
+            SendMessage msg = new SendMessage();
+            msg.setChatId(message.getChatId());
+            msg.setText(MSG_NO_TICKETS);
+            bookingBot.send(msg);
+        }
 
         tickets.forEach(ticket -> {
             SendMessage msg = new SendMessage();

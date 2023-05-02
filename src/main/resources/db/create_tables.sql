@@ -86,7 +86,7 @@ CREATE TABLE ticket (
     flight_id uuid NOT NULL,
     order_dateTime timestamp NOT NULL,
     price real NOT NULL,
-    currencySymbol varchar,
+    currency_symbol varchar,
     seat_id uuid,
     tariff_id uuid NOT NULL,
     FOREIGN KEY (flight_id) REFERENCES flight(id),

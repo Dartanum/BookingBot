@@ -9,11 +9,7 @@ import ru.dartanum.bookingbot.app.BookingBot;
 import ru.dartanum.bookingbot.app.BotState;
 import ru.dartanum.bookingbot.app.action.CallbackQueryAction;
 import ru.dartanum.bookingbot.app.api.repository.UserStorageRepository;
-import ru.dartanum.bookingbot.domain.Place;
 
-import java.util.Arrays;
-
-import static ru.dartanum.bookingbot.app.MessageFactory.placeClassByName;
 import static ru.dartanum.bookingbot.app.constant.BotReplyConstants.MSG_START_SEARCHING_TICKETS;
 
 @Component
@@ -35,7 +31,7 @@ public class ChooseDestinationAction implements CallbackQueryAction {
         userStorageRepository.save(storage);
         sendMessage.setText(MSG_START_SEARCHING_TICKETS);
         bookingBot.deleteMessage(callbackQuery.getMessage().getChatId(), callbackQuery.getMessage().getMessageId());
-        new Thread(() -> ticketSearcher.searchAndSendResult(callbackQuery.getMessage().getChatId(), storage.getBookingFromTo(), storage.getBookingDateRange())).start();
+        new Thread(() -> ticketSearcher.searchAndSendResult(callbackQuery.getMessage().getChatId(), storage.getBookingFromTo(), storage.getBookingDate())).start();
 
         return BotState.BOOKING_destination_place_chosen;
     }

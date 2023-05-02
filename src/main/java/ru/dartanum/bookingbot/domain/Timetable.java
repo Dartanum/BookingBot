@@ -6,6 +6,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -24,5 +26,7 @@ public class Timetable {
     @OneToOne(optional = false)
     @JoinColumn(name = "flight_id")
     @NotNull
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Flight flight;
 }

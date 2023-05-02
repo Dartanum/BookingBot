@@ -21,7 +21,7 @@ public class UserStorage {
     private Long userId;
     private String botState;
     private Pair<Place, Place> bookingFromTo;
-    private Pair<LocalDate, LocalDate> bookingDateRange;
+    private LocalDate bookingDate;
     private Set<TelegramPassenger> passengers;
     private Set<UUID> ticketIds;
     private TelegramTicket newTicket;
@@ -42,7 +42,7 @@ public class UserStorage {
         editingPassengerField = null;
         newPassenger = new TelegramPassenger();
         bookingFromTo = null;
-        bookingDateRange = null;
+        bookingDate = null;
     }
 
     public BotState getBotState() {

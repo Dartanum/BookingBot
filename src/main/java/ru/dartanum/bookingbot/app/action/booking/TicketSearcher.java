@@ -29,8 +29,8 @@ public class TicketSearcher {
     private final TariffPriceRepository tariffPriceRepository;
     private final SeatPriceRepository seatPriceRepository;
 
-    public void searchAndSendResult(Long chatId, Pair<Place, Place> route, Pair<LocalDate, LocalDate> dates) {
-        var timetableRows = timetableRepository.searchByDateAndFromTo(dates.getLeft(), route.getLeft(), route.getRight());
+    public void searchAndSendResult(Long chatId, Pair<Place, Place> route, LocalDate date) {
+        var timetableRows = timetableRepository.searchByDateAndFromTo(date, route.getLeft(), route.getRight());
 
         if (timetableRows.isEmpty()) {
             SendMessage message = new SendMessage();
